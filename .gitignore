@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Data files
+data/raw/*
+data/processed/*
+
+# Keep folder structure
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Local junk
+2060
+2060-12-31
