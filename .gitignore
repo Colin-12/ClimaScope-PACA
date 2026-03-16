@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Data files
+data/raw/*
+data/processed/*
+
+# Keep folder structure
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Local junk
+2060
+2060-12-31
+
+# Keep dashboard-ready app artifacts
+!data/processed/final/
+!data/processed/final/dashboard_hero_station_daily_v1.parquet
+!data/processed/final/dashboard_hero_station_annual_v1.parquet
+!data/processed/final/dashboard_department_annual_v1.parquet
+!data/processed/climate/drias_projection_pilot_v1.parquet
