@@ -1,4 +1,4 @@
-# Vision Produit — Territoire 2100
+# Vision Produit — ClimaScope-PACA
 
 ## Problème
 Les données climatiques sont dispersées, complexes et difficiles à traduire en actions concrètes à l’échelle locale.
