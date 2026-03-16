@@ -18,7 +18,7 @@ Lister les sources officielles, le type de données attendu, le mode d’acquisi
 - **niveau visé** : station / département / région selon disponibilité
 - **format attendu** : CSV, CSV.GZ, JSON
 - **mode d’acquisition** : téléchargement direct ou script HTTP
-- **statut** : à faire
+- **statut** : priorité 1
 
 ### 2. DRIAS
 - **source_key** : `drias`
@@ -27,7 +27,7 @@ Lister les sources officielles, le type de données attendu, le mode d’acquisi
 - **niveau visé** : région / grille / indicateurs agrégés
 - **format attendu** : CSV, NetCDF, ZIP
 - **mode d’acquisition** : téléchargement portail / script si URL directe
-- **statut** : à faire
+- **statut** : priorité 1
 
 ### 3. CITEPA Secten
 - **source_key** : `citepa`
@@ -36,7 +36,7 @@ Lister les sources officielles, le type de données attendu, le mode d’acquisi
 - **niveau visé** : national avec possibilité d’agrégation ou contextualisation territoriale
 - **format attendu** : XLSX, CSV, PDF
 - **mode d’acquisition** : téléchargement direct
-- **statut** : à faire
+- **statut** : priorité 1
 
 ### 4. Données d’impact / feux / aléas
 - **source_key** : `impacts`
@@ -45,7 +45,7 @@ Lister les sources officielles, le type de données attendu, le mode d’acquisi
 - **niveau visé** : PACA / département / commune selon disponibilité
 - **format attendu** : CSV, GeoJSON, SHP
 - **mode d’acquisition** : à préciser
-- **statut** : à faire
+- **statut** : phase 3
 
 ## Fichiers attendus pour le MVP
 - un historique climatique exploitable
