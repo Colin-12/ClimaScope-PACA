@@ -50,9 +50,9 @@ def inspect_file(file_path: str | Path, n_rows: int = 5) -> None:
 
 if __name__ == "__main__":
     files = [
-        "data/raw/meteo/meteo_dep13_daily_1786_1949_rr_t_vent_v1.csv.gz",
-        "data/raw/meteo/meteo_dep13_daily_1950_2024_rr_t_vent_v1.csv.gz",
-        "data/raw/meteo/meteo_dep13_daily_2025_2026_rr_t_vent_v1.csv.gz",
+        "data/raw/meteo/Q_13_1786-1949_RR-T-Vent.csv.gz",
+        "data/raw/meteo/Q_13_previous-1950-2024_RR-T-Vent.csv.gz",
+        "data/raw/meteo/Q_13_latest-2025-2026_RR-T-Vent.csv.gz",
     ]
 
     for file_path in files:
