@@ -1,4 +1,3 @@
-cat > src/data/inspect_meteo.py <<'PY'
 from pathlib import Path
 
 import pandas as pd
@@ -58,4 +57,3 @@ if __name__ == "__main__":
 
     for file_path in files:
         inspect_file(file_path)
-PY
