@@ -5,129 +5,42 @@ import pandas as pd
 from .inspect_meteo import read_meteo_file
 
 
-def normalize_column_name(col: str) -> str:
-    return (
-        str(col)
-        .strip()
-        .lower()
-        .replace(" ", "_")
-        .replace("-", "_")
-        .replace("/", "_")
-        .replace("(", "")
-        .replace(")", "")
-    )
-
-
-def find_first_matching_column(columns: list[str], candidates: list[str]) -> str | None:
-    normalized = {normalize_column_name(col): col for col in columns}
-
-    for candidate in candidates:
-        candidate_norm = normalize_column_name(candidate)
-        if candidate_norm in normalized:
-            return normalized[candidate_norm]
-
-    return None
-
-
-def to_numeric_safe(series: pd.Series) -> pd.Series:
-    return pd.to_numeric(
-        series.astype(str).str.replace(",", ".", regex=False),
-        errors="coerce",
-    )
-
-
 def load_and_standardize_meteo_file(file_path: str | Path) -> pd.DataFrame:
+    """
+    Load one Meteo-France daily raw file and return a standardized dataframe.
+    """
     df = read_meteo_file(file_path).copy()
-    original_columns = list(df.columns)
-
-    date_col = find_first_matching_column(
-        original_columns,
-        ["DATE", "date", "AAAAMMJJ", "date_obs"],
-    )
-    station_col = find_first_matching_column(
-        original_columns,
-        ["NUM_POSTE", "num_poste", "station_id", "poste"],
-    )
-    rr_col = find_first_matching_column(
-        original_columns,
-        ["RR", "rr", "precipitations", "precipitation"],
-    )
-    tn_col = find_first_matching_column(
-        original_columns,
-        ["TN", "tn", "tmin", "temp_min"],
-    )
-    tx_col = find_first_matching_column(
-        original_columns,
-        ["TX", "tx", "tmax", "temp_max"],
-    )
-    tm_col = find_first_matching_column(
-        original_columns,
-        ["TM", "tm", "tmoy", "temp_moy", "temperature_moyenne"],
-    )
-    dg_col = find_first_matching_column(
-        original_columns,
-        ["DG", "dg", "duree_gel"],
-    )
-    lat_col = find_first_matching_column(
-        original_columns,
-        ["LAT", "lat", "latitude"],
-    )
-    lon_col = find_first_matching_column(
-        original_columns,
-        ["LON", "lon", "longitude"],
-    )
-    name_col = find_first_matching_column(
-        original_columns,
-        ["NOM_USUEL", "nom_usuel", "nom_station", "libelle_station"],
-    )
 
     result = pd.DataFrame()
 
-    if date_col is not None:
-        result["date"] = pd.to_datetime(df[date_col], errors="coerce")
-    else:
-        result["date"] = pd.NaT
-
-    result["source_file"] = Path(file_path).name
-
-    if station_col is not None:
-        result["station_id"] = df[station_col].astype(str)
-    if name_col is not None:
-        result["station_name"] = df[name_col].astype(str)
-
-    if lat_col is not None:
-        result["latitude"] = to_numeric_safe(df[lat_col])
-    if lon_col is not None:
-        result["longitude"] = to_numeric_safe(df[lon_col])
-
-    if rr_col is not None:
-        result["rr_mm"] = to_numeric_safe(df[rr_col])
-    if tn_col is not None:
-        result["tn_c"] = to_numeric_safe(df[tn_col])
-    if tx_col is not None:
-        result["tx_c"] = to_numeric_safe(df[tx_col])
-    if tm_col is not None:
-        result["tm_c"] = to_numeric_safe(df[tm_col])
-    if dg_col is not None:
-        result["dg"] = to_numeric_safe(df[dg_col])
-
+    result["date"] = pd.to_datetime(df["AAAAMMJJ"].astype(str), format="%Y%m%d", errors="coerce")
     result["year"] = result["date"].dt.year
     result["month"] = result["date"].dt.month
 
-    if "tx_c" in result.columns:
-        result["hot_day_over_30"] = result["tx_c"] > 30
-    else:
-        result["hot_day_over_30"] = pd.NA
+    result["station_id"] = df["NUM_POSTE"].astype(str)
+    result["station_name"] = df["NOM_USUEL"].astype(str)
 
-    if "tn_c" in result.columns:
-        result["frost_day"] = result["tn_c"] < 0
-    else:
-        result["frost_day"] = pd.NA
+    result["latitude"] = pd.to_numeric(df["LAT"], errors="coerce")
+    result["longitude"] = pd.to_numeric(df["LON"], errors="coerce")
+    result["altitude_m"] = pd.to_numeric(df["ALTI"], errors="coerce")
 
-    if "rr_mm" in result.columns:
-        result["dry_day"] = result["rr_mm"] == 0
-    else:
-        result["dry_day"] = pd.NA
+    result["rr_mm"] = pd.to_numeric(df["RR"], errors="coerce")
+    result["tn_c"] = pd.to_numeric(df["TN"], errors="coerce")
+    result["tx_c"] = pd.to_numeric(df["TX"], errors="coerce")
+    result["tm_c"] = pd.to_numeric(df["TM"], errors="coerce")
+    result["dg"] = pd.to_numeric(df["DG"], errors="coerce")
+
+    result["qrr"] = pd.to_numeric(df["QRR"], errors="coerce")
+    result["qtn"] = pd.to_numeric(df["QTN"], errors="coerce")
+    result["qtx"] = pd.to_numeric(df["QTX"], errors="coerce")
+    result["qtm"] = pd.to_numeric(df["QTM"], errors="coerce")
+    result["qdg"] = pd.to_numeric(df["QDG"], errors="coerce")
+
+    result["hot_day_over_30"] = result["tx_c"] > 30
+    result["frost_day"] = result["tn_c"] < 0
+    result["dry_day"] = result["rr_mm"] == 0
+
+    result["source_file"] = Path(file_path).name
 
     return result
 
@@ -135,7 +48,7 @@ def load_and_standardize_meteo_file(file_path: str | Path) -> pd.DataFrame:
 def combine_meteo_files(file_paths: list[str | Path]) -> pd.DataFrame:
     frames = [load_and_standardize_meteo_file(path) for path in file_paths]
     combined = pd.concat(frames, ignore_index=True)
-    combined = combined.sort_values(["date"], na_position="last").reset_index(drop=True)
+    combined = combined.sort_values(["date", "station_id"], na_position="last").reset_index(drop=True)
     return combined
 
 
@@ -161,8 +74,10 @@ if __name__ == "__main__":
     ]
 
     df = combine_meteo_files(files)
+
     print(df.head())
     print(df.columns.tolist())
     print(df.shape)
+    print(df[["date", "station_id", "station_name", "rr_mm", "tn_c", "tx_c", "tm_c", "dg"]].head())
 
     save_meteo_processed(df, "data/processed/climate")
