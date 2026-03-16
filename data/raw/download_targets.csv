@@ -1,0 +1,4 @@
+source_key,acquisition_mode,status,target_filename,source_reference,notes
+meteo,manual,pending,meteo_bdr_daily_historical_v1.csv.gz,https://www.data.gouv.fr/datasets/donnees-climatologiques-de-base-quotidiennes,"Choisir le fichier quotidien du département 13 (Bouches-du-Rhône) depuis la page officielle"
+citepa,direct_url,pending,citepa_france_sector_annual_1990_2024_v1.zip,https://www.citepa.org/wp-content/uploads/2025/06/Citepa2025_donnees_par_secteur.zip,"Données par secteur édition 2025"
+drias,manual_account_export,pending,drias_paca_climate_projections_v1.csv,https://www.drias-climat.fr/,"Créer un compte, puis exporter une sélection PACA sur les indicateurs climat"
