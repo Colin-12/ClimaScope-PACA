@@ -1,0 +1,32 @@
+name: Create Folder Structure
+
+on:
+  workflow_dispatch: # Permet de lancer le code manuellement
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create directories and gitkeeps
+        run: |
+          mkdir -p data/raw/{meteo,drias,citepa,impacts}
+          mkdir -p data/processed/{climate,projections,emissions,final}
+          touch data/raw/meteo/.gitkeep
+          touch data/raw/drias/.gitkeep
+          touch data/raw/citepa/.gitkeep
+          touch data/raw/impacts/.gitkeep
+          touch data/processed/climate/.gitkeep
+          touch data/processed/projections/.gitkeep
+          touch data/processed/emissions/.gitkeep
+          touch data/processed/final/.gitkeep
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add data/
+          git commit -m "Structure de dossiers créée via GitHub Actions"
+          git push
