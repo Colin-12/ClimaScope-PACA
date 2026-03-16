@@ -34,6 +34,7 @@ def inspect_file(file_path: str | Path, n_rows: int = 5) -> None:
     print(f"FILE: {file_path}")
     print("=" * 100)
     print(f"Shape: {df.shape}")
+
     print("\nColumns:")
     for col in df.columns:
         print(f"- {col}")
